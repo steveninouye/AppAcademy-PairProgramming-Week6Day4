@@ -36,32 +36,17 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -86,14 +71,25 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/dom_node_collection.js":
+/*!************************************!*\
+  !*** ./src/dom_node_collection.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class DOMNodeCollection {\n  constructor(HTMLElements){ //\n    this.HTMLElements = HTMLElements;\n  }\n  \n  html(str){\n    if(str){\n      this.HTMLElements.forEach(element=> {\n        element.innerHTML = str;\n      });\n    } else {\n      return this.HTMLElements[0].innerHTML;\n    }\n  }\n  \n  empty(){\n    this.HTMLElements.forEach(element => {\n      element.innerHTML = \"\";\n    });\n  }\n  \n  append(arg){\n    if (arg instanceof HTMLElement){\n          this.HTMLElements.forEach(el => el.appendChild(arg));\n    } else if (arg.constructor === String){\n      this.HTMLElements.forEach(el => {\n        el.innerHTML += arg;\n      });\n    } else if (arg.constructor === DOMNodeCollection){\n      arg.forEach(argElement => {\n        this.HTMLElements.forEach(el => { el.appendChild(argElement); });\n      });\n    }\n  }\n  \n  forEach(cb){\n    this.HTMLElements.forEach(el => cb(el));\n  }\n  \n  attr(attribute, setter){\n    if(attribute === \"checked\"){\n      this.HTMLElements.forEach(el => el.checked = !el.checked );\n    }\n    if(setter){\n      \n    } else if (attribute){\n      \n    } else {\n      let attributes = {};\n      this.HTMLElements.forEach(el => {\n        for(let i = 0; el[i] !== undefined; i++){\n            if(attributes[el[i]] !== undefined){\n              attributes[el[i]] = el[i].value;\n            }\n        }\n      });\n      return attributes;\n    }\n  }\n  \n  addClass(){\n    \n  }\n  \n  removeClass(){\n    \n  }\n  \n}\n\nmodule.exports = DOMNodeCollection;\n\n//# sourceURL=webpack:///./src/dom_node_collection.js?");
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-eval("window.$l = function(arg){\n  if(arg instanceof String){\n    if(arg[0] === \"#\"){\n      // it is an ID\n    }else if(arg[0]){\n      // it is an calss\n    }\n  }\n}\n// $(\".small-div\")\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("const DOMNodeCollection = __webpack_require__(/*! ./dom_node_collection.js */ \"./src/dom_node_collection.js\");\n\nwindow.$l = function(arg){\n  if(typeof arg === \"string\"){\n    let result = [];\n    if(arg[0] === \"#\"){\n      result.push(document.getElementById(arg.slice(1)));\n    }else if(arg[0] === \".\"){\n      let elements = document.querySelectorAll(arg.slice());\n      for(let i = 0; i < elements.length; i++){\n        result.push(elements[i]);\n      }\n    } else {\n      elements = document.getElementsByTagName(arg);\n      for(let i = 0; i < elements.length; i++){\n        result.push(elements[i]);\n      }\n    }\n    return new DOMNodeCollection(result);\n  }else if (arg instanceof HTMLElement){\n    return new DOMNodeCollection([arg]);\n  }\n}\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 
